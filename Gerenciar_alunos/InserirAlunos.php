@@ -4,7 +4,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $matricula = $_POST["matricula"];
     $nome = $_POST["nome"];
     $email = $_POST["email"];
-    
+    $existeMatricula = false;
+
     if (!file_exists("alunos.txt")) {
         $arqAlunos = fopen("alunos.txt", "w") or die("Erro ao criar arquivo!");
         $cabecalho = "matricula;nome;email\n";
@@ -12,16 +13,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         fclose($arqAlunos);
     }
 
-    $arqAlunos = fopen("alunos.txt", "a") or die("Erro ao abrir arquivo!");
-    $linha = $matricula . ";" . $nome . ";" . $email . "\n";
+    $arqAlunos = fopen("alunos.txt", "r") or die("Erro ao abrir arquivo para leitura!");
+    fgets($arqAlunos);
     
-    if (fwrite($arqAlunos, $linha)) {
-        $msg = "Aluno cadastrado com sucesso!";
-    } else {
-        $msg = "Erro ao salvar os dados.";
+    while (!feof($arqAlunos)){
+        $linha = fgets($arqAlunos);
+
+        if (trim($linha) == "") continue; 
+        $colunaDados = explode(';', $linha);
+        
+        if ($colunaDados[0] == $matricula){
+            $existeMatricula = true;
+            break;
+        }
     }
-    
     fclose($arqAlunos);
+
+    if ($existeMatricula) {
+        $msg = "Matrícula já cadastrada";
+    } else {
+        $arqAlunos = fopen("alunos.txt", "a") or die("Erro ao abrir arquivo para gravação!");
+        $linha = $matricula . ";" . $nome . ";" . $email . "\n";
+
+        if (fwrite($arqAlunos, $linha)) {
+            $msg = "Aluno cadastrado com sucesso!";
+        } else {
+            $msg = "Erro ao salvar os dados.";
+        }
+        fclose($arqAlunos);
+    }
 }
 ?>
 <!DOCTYPE html>
