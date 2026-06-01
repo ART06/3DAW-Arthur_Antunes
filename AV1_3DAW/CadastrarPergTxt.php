@@ -1,9 +1,9 @@
 <?php
+$msg = "";
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $id=$_POST["id"];
     $perg=$_POST["perg"];
     $correto=$_POST["correto"];
-    $msg="";
 
     if(!file_exists("PergTxt.txt")){
         $arqTxt=fopen("PergTxt.txt","w") or die("Erro ao criar arquivo.");
@@ -24,21 +24,42 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     fclose($arqTxt);
 }
 ?><!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastar Pergunta Texto</title>
+    <title>Cadastrar Pergunta Texto</title>
+    <script>
+        function validarCadastroTxt() {
+            const id = document.querySelector('input[name="id"]').value.trim();
+            const perg = document.querySelector('input[name="perg"]').value.trim();
+            const correto = document.querySelector('input[name="correto"]').value.trim();
+
+            if (id == "" || isNaN(id)) {
+                alert("O ID é obrigatório e precisa ser numérico.");
+                return;
+            }
+            if (perg == "") {
+                alert("O campo da pergunta precisa ser preenchido.");
+                return;
+            }
+            if (correto == "") {
+                alert("A resposta-modelo é obrigatória.");
+                return;
+            }
+
+            document.getElementById('formCadTxt').submit();
+        }
+    </script>
 </head>
 <body>
     <h1>Cadastrar Pergunta de Texto</h1>
-    <form action="" method="POST">
-        Insira ID da pergunta: <input type="text" name="id" required>
-        Insira a pergunta: <input type="text" name="perg" required><br><br>
+    <form id="formCadTxt" action="" method="POST">
+        Insira ID da pergunta: <input type="text" name="id"><br><br>
+        Insira a pergunta: <input type="text" name="perg"><br><br>
         Qual é a resposta-modelo?<br><input type="text" name="correto"><br><br>
-        <input type="submit" value="Enviar">
+        <button type="button" onclick="validarCadastroTxt()">Enviar</button>
     </form>
-    <p><?PHP echo $msg; ?></p>
+    <p><?php echo $msg; ?></p>
     <a href="ListarPergResp.php">Ver Todas as Perguntas</a>
     <hr>
     <a href="CadastrarPergMult.php">Cadastrar Pergunta de Múltipla Escolha</a><br><br>

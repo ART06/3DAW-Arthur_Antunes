@@ -20,12 +20,26 @@ if(isset($_POST['id_excluir'])){
 }
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Excluir Pergunta Mult</title>
+    <script>
+        function validarExclusao() {
+            const id = document.querySelector('input[name="id_excluir"]').value.trim();
+            if (id == "" || isNaN(id)) {
+                alert("Insira um ID válido.");
+                return;
+            }
+            document.getElementById('formExcluirMult').submit();
+        }
+    </script>
+</head>
 <body>
     <h1>Excluir Pergunta de Múltipla Escolha</h1>
-    <form method="POST">
-        Digite o ID para excluir: <input type="text" name="id_excluir" required>
-        <input type="submit" value="Excluir">
+    <form id="formExcluirMult" method="POST" action="">
+        Digite o ID para excluir: <input type="text" name="id_excluir">
+        <button type="button" onclick="validarExclusao()">Excluir</button>
     </form>
     <p><?php echo $msg; ?></p>
     <a href="CadastrarPergMult.php">Voltar</a>
