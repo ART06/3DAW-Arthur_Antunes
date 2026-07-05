@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/* CORES */
+:root {
+    --bg-creme: #FFF7EE;
+    --rosa-claro: #ffcce0;
+    --rosa-forte: #F5A9CB;
+    --marrom-escuro: #2B191A;
+    --branco: #FFFFFF;
+}
+
+/* RESET E FUNDO */
+* {
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: var(--bg-creme);
+    color: var(--marrom-escuro);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* CABEÇALHO */
+.header-nav {
+    background: linear-gradient(to right, var(--rosa-claro), var(--rosa-forte));
+    width: 100%;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 40px;
+}
+
+.title-main {
+    margin: 0;
+    font-size: 24px;
+    color: var(--marrom-escuro);
+}
+
+.nav-link {
+    color: var(--marrom-escuro);
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 2px solid transparent;
+}
+
+.nav-link:hover {
+    border-bottom: 2px solid var(--marrom-escuro);
+}
+
+/* CONTAINERS E CARTÕES */
+.auth-container, .agendamento-container, .pagamento-container, .table-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.card-auth, .agendamento-container, .pagamento-container {
+    background-color: var(--branco);
+    border: 6px solid var(--rosa-forte);
+    padding: 40px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.title-auth, .subtitle-sec {
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 30px;
+    color: var(--marrom-escuro);
+}
+
+/* FORMULÁRIOS E INPUTS */
+.form-group, .form-agendamento {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.label-form {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: -10px;
+}
+
+.input-form, .select-form {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    background-color: var(--branco);
+    color: var(--marrom-escuro);
+    font-size: 14px;
+    outline: none;
+}
+
+.input-form:focus, .select-form:focus {
+    border-color: var(--rosa-forte);
+}
+
+/* BOTÕES */
+.btn-primary, .btn-success {
+    background-color: var(--marrom-escuro);
+    color: var(--branco);
+    border: none;
+    padding: 15px;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background 0.3s;
+}
+
+.btn-primary:hover, .btn-success:hover {
+    background-color: #4a2c2f;
+}
+
+/* LINKS E TEXTOS SECUNDÁRIOS */
+.text-link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: underline;
+    color: var(--marrom-escuro);
+}
+
+/* TABELA DE HISTÓRICO */
+.tabela-historico {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--branco);
+    border: 4px solid var(--rosa-forte);
+}
+
+.tabela-historico th {
+    background-color: var(--marrom-escuro);
+    color: var(--branco);
+    padding: 15px;
+    text-align: left;
+}
+
+.tabela-historico td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.subtitle-price {
+    text-align: center;
+    font-size: 28px;
+    background-color: var(--marrom-escuro);
+    color: var(--branco);
+    padding: 15px;
+    margin-top: 0;
+    margin-bottom: 30px;
+}

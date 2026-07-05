@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Meu Histórico</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="body-history" onload="carregarHistorico()">
+    <div class="header-nav">
+        <h1 class="title-main">Histórico de Agendamentos</h1>
+        <a href="agendamento.html" class="nav-link">Novo Agendamento</a>
+    </div>
+
+    <div class="table-container">
+        <table class="tabela-historico" border="1" width="100%">
+            <thead>
+                <tr>
+                    <th>Data e Hora</th>
+                    <th>Serviço</th>
+                    <th>Profissional</th>
+                    <th>Valor</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="lista-historico">
+                </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function carregarHistorico() {
+            const cliId = sessionStorage.getItem('cliente_id');
+            const resposta = await fetch('api_cliente.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ acao: 'historico', cliente_id: cliId })
+            });
+            const json = await resposta.json();
+
+            if(json.sucesso) {
+                const tbody = document.getElementById('lista-historico');
+                json.dados.forEach(item => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${new Date(item.data_hora.replace(' ', 'T')).toLocaleString('pt-BR')}</td>
+                            <td>${item.servico}</td>
+                            <td>${item.profissional}</td>
+                            <td>R$ ${item.valor_final}</td>
+                            <td>${item.status}</td>
+                        </tr>
+                    `;
+                });
+            }
+        }
+    </script>
+</body>
+</html>

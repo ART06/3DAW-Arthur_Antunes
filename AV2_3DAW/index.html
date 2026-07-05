@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Salão - Acesso</title>
+</head>
+<body class="body-auth">
+    <div class="auth-container">
+        <div id="box-login" class="card-auth">
+            <h2 class="title-auth">Login do Cliente</h2>
+            <form id="form-login" class="form-group">
+                <input type="email" id="log-email" class="input-form" placeholder="Seu E-mail" required>
+                <input type="password" id="log-senha" class="input-form" placeholder="Sua Senha" required>
+                <button type="button" class="btn-primary" onclick="fazerLogin()">Entrar</button>
+            </form>
+            <p class="text-link" onclick="alternarTelas('box-cadastro')">Não tem conta? Cadastre-se</p>
+        </div>
+
+        <div id="box-cadastro" class="card-auth" style="display:none;">
+            <h2 class="title-auth">Novo Cadastro</h2>
+            <form id="form-cadastro" class="form-group">
+                Nome:<input type="text" id="cad-nome" class="input-form" placeholder="Nome Completo" required>
+                E-mail:<input type="email" id="cad-email" class="input-form" placeholder="E-mail" required>
+                Telefone:<input type="text" id="cad-telefone" class="input-form" placeholder="Telefone" required>
+                <label class="label-form">Data de nascimento:</label>
+                <input type="date" id="cad-nascimento" class="input-form" required>
+                <input type="password" id="cad-senha" class="input-form" placeholder="Crie uma senha" required>
+                <button type="button" class="btn-primary" onclick="fazerCadastro()">Cadastrar</button>
+            </form>
+            <p class="text-link" onclick="alternarTelas('box-login')">Já tem conta? Faça Login</p>
+        </div>
+    </div>
+
+    <script>
+        function alternarTelas(mostrarId) {
+            document.getElementById('box-login').style.display = 'none';
+            document.getElementById('box-cadastro').style.display = 'none';
+            document.getElementById(mostrarId).style.display = 'block';
+        }
+
+        async function fazerLogin() {
+            const dados = {
+                acao: 'login',
+                email: document.getElementById('log-email').value,
+                senha: document.getElementById('log-senha').value
+            };
+
+            const resposta = await fetch('api_cliente.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            });
+            const json = await resposta.json();
+
+            if (json.sucesso) {
+                sessionStorage.setItem('cliente_id', json.cliente_id);
+                sessionStorage.setItem('cliente_nome', json.nome);
+                window.location.href = 'agendamento.html';
+            } else {
+                alert(json.mensagem);
+            }
+        }
+
+        async function fazerCadastro() {
+            const dados = {
+                acao: 'cadastrar',
+                nome: document.getElementById('cad-nome').value,
+                email: document.getElementById('cad-email').value,
+                telefone: document.getElementById('cad-telefone').value,
+                nascimento: document.getElementById('cad-nascimento').value,
+                senha: document.getElementById('cad-senha').value
+            };
+
+            const resposta = await fetch('api_cliente.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            });
+            const json = await resposta.json();
+
+            alert(json.mensagem);
+            if (json.sucesso) alternarTelas('box-login');
+        }
+    </script>
+</body>
+</html>

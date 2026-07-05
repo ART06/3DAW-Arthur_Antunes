@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <title>Pagamento via Cartão</title>
+</head>
+<body class="body-pay">
+    <div class="pagamento-container card-auth">
+        <h2 class="title-auth">Pagamento Exclusivo em Cartão de Crédito</h2>
+        <h3 class="subtitle-price" id="display-valor">Total: R$ 0.00</h3>
+        
+        <form class="form-group">
+            <input type="text" class="input-form" placeholder="Número do Cartão" required>
+            <input type="text" class="input-form" placeholder="Nome do Titular" required>
+            <input type="text" class="input-form" placeholder="Validade (MM/AA)" required>
+            <input type="text" class="input-form" placeholder="CVV" required>
+            <button type="button" class="btn-primary" onclick="processarPagamento()">Pagar e Confirmar</button>
+        </form>
+    </div>
+
+    <script>
+        const agendamentoId = sessionStorage.getItem('agendamento_pendente');
+        const valor = sessionStorage.getItem('valor_cobrar');
+        if(!agendamentoId) window.location.href = 'agendamento.html';
+
+        document.getElementById('display-valor').innerText = "Total: R$ " + parseFloat(valor).toFixed(2);
+
+        async function processarPagamento() {
+            const resposta = await fetch('api_cliente.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ acao: 'pagar', agendamento_id: agendamentoId })
+            });
+            const json = await resposta.json();
+
+            if (json.sucesso) {
+                alert(json.mensagem);
+                sessionStorage.removeItem('agendamento_pendente');
+                window.location.href = 'historico.html';
+            } else {
+                alert(json.mensagem);
+            }
+        }
+    </script>
+</body>
+</html>

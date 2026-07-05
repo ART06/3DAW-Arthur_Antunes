@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Marcar Horário</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="body-dashboard" onload="carregarOpcoes()">
+    <div class="header-nav">
+        <h1 id="boas-vindas" class="title-main">Bem-vindo(a)</h1>
+        <a href="historico.html" class="nav-link">Ver Meu Histórico</a>
+    </div>
+
+    <div class="agendamento-container">
+        <h2 class="subtitle-sec">Agendar Novo Serviço</h2>
+        
+        <form class="form-agendamento">
+            <label class="label-form">Escolha o Serviço:</label>
+            <select id="sel-servico" class="select-form" required></select>
+
+            <label class="label-form">Profissional de preferência:</label>
+            <select id="sel-profissional" class="select-form" required></select>
+
+            <label class="label-form">Data da Visita:</label>
+            <input type="date" id="in-data" class="input-form" required>
+
+            <label class="label-form">Horário:</label>
+            <select id="in-hora" class="select-form" required>
+                <option value="09:00">09:00</option>
+                <option value="11:00">11:00</option>
+                <option value="14:00">14:00</option>
+                <option value="16:00">16:00</option>
+                <option value="18:00">18:00</option>
+</select>
+
+            <button type="button" class="btn-success" onclick="confirmarAgendamento()">Ir para Pagamento</button>
+        </form>
+    </div>
+
+    <script>
+        const cliId = sessionStorage.getItem('cliente_id');
+        if(!cliId) window.location.href = 'index.html';
+        document.getElementById('boas-vindas').innerText = "Bem-vindo(a), " + sessionStorage.getItem('cliente_nome');
+
+        async function carregarOpcoes() {
+            const hoje = new Date();
+            const dataFormatada = hoje.toISOString().split('T')[0]; 
+            document.getElementById('in-data').min = dataFormatada;
+
+            const resposta = await fetch('api_cliente.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ acao: 'carregar_dados_agendamento' })
+            });
+            const json = await resposta.json();
+
+            if(json.sucesso) {
+                const selServ = document.getElementById('sel-servico');
+                json.servicos.forEach(s => {
+                    selServ.innerHTML += `<option value="${s.id}">${s.nome} - R$ ${s.preco} (${s.duracao_minutos} min)</option>`;
+                });
+
+                const selProf = document.getElementById('sel-profissional');
+                json.profissionais.forEach(p => {
+                    selProf.innerHTML += `<option value="${p.id}">${p.nome} (Esp: ${p.especialidade})</option>`;
+                });
+            }
+        }
+
+        async function confirmarAgendamento() {
+            const dataEscolhida = document.getElementById('in-data').value;
+            const horaEscolhida = document.getElementById('in-hora').value;
+
+            if (dataEscolhida === "" || horaEscolhida === "") {
+                alert("Por favor, preencha a data e o horário.");
+                return;
+            }
+
+            const dataHoraUnida = dataEscolhida + 'T' + horaEscolhida;
+
+            const dados = {
+                acao: 'agendar',
+                cliente_id: cliId,
+                servico_id: document.getElementById('sel-servico').value,
+                profissional_id: document.getElementById('sel-profissional').value,
+                data_hora: dataHoraUnida
+            };
+
+            const resposta = await fetch('api_cliente.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            });
+            const json = await resposta.json();
+
+            if (json.sucesso) {
+                if(json.desconto_aplicado) {
+                    alert("Feliz Aniversário! Você ganhou 20% de desconto no seu serviço.");
+                }
+                sessionStorage.setItem('agendamento_pendente', json.agendamento_id);
+                sessionStorage.setItem('valor_cobrar', json.valor);
+                window.location.href = 'pagamento.html';
+            } else {
+                alert(json.mensagem);
+            }
+        }
+    </script>
+</body>
+</html>
